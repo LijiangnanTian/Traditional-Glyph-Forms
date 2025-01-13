@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+
+    <title>Text Conversion</title>
+    <style>
+        body {
+            font-family: "Hiragino Mincho ProN W6", serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000000; /* Dark mode background colour */
+            color: #ffffff; /* Dark mode text colour */
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .textbox {
+            font-family: "Hiragino Mincho ProN", serif;
+            font-size: 20pt;
+            font-weight: bold;
+            width: 300px;
+            height: 200px;
+            overflow-y: auto;
+            background-color: #000000; /* Textbox background colour */
+            color: #ffffff; /* Textbox text colour */
+            border: 1px solid #ffffff; /* Textbox border colour */
+            writing-mode: vertical-rl;
+        }
+
+        .button {
+            font-family: "Hiragino Mincho ProN W6", serif;
+            font-size: 20pt;
+            border-radius: 99px;
+            background-color: #000000; /* Button background colour */
+            color: #ffffff; /* Button text colour */
+            padding: 10px 20px;
+            border: 1px solid #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s; /* Transition effect for colour changes */
+        }
+
+        .button:hover {
+            background-color: #ff00ff; /* Button background colour on hover */
+            color: #ffffff; /* Button text colour on hover */
+        }
+
+        .button:active {
+            background-color: hotpink; /* Button background colour on click */
+            color: white; /* Button text colour on click */
+        }
+
+        .result-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load the conversion table from the JSON file
+            $.getJSON("https://raw.githubusercontent.com/LijiangnanTian/Traditional-Glyph-Forms/main/%E8%88%8A%E5%AD%97%E5%BD%A2.json", function(data) {
+                // Handle button click event
+                $("#convertBtn").click(function() {
+                    var inputText = $("#inputText").val(); // Get input text
+                    var resultText = ""; // Initialise result text
+                    
+                    // Loop through each character in the input text
+                    for (var i = 0; i < inputText.length; i++) {
+                        var character = inputText[i];
+                        
+                        // Check if the character exists in the conversion table
+                        if (data[character]) {
+                            resultText += data[character]; // Append converted character
+                        } else {
+                            resultText += character; // Append original character
+                        }
+                    }
+                    
+                    $("#resultText").val(resultText); // Set the result text
+                });
+                
+                // Handle copy button click event
+                $("#copyBtn").click(function() {
+                    var resultText = $("#resultText").val(); // Get the result text
+                    copyToClipboard(resultText); // Copy the result text to clipboard
+                });
+            });
+            
+            // Function to copy text to clipboard
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text)
+                    .then(function() {
+                        console.log("Text copied to clipboard");
+                    })
+                    .catch(function(error) {
+                        console.error("Error copying text to clipboard:", error);
+                    });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>傳統字形󠄁轉換器󠄁</h1>
+    <div class="container">
+        <div>
+            <label for="inputText"></label>
+            <textarea id="inputText" class="textbox"></textarea><br>
+        </div>
+        
+        <div>
+            <button id="convertBtn" class="button">轉換</button><br><br>
+        </div>
+        
+        <div class="result-container">
+            <label for="resultText"></label>
+            <textarea id="resultText" class="textbox" readonly></textarea><br>
+        </div>
+        
+        <div>
+            <button id="copyBtn" class="button">複製文󠄁本</button>
+        </div>
+    </div>
+</body>
+</html>
